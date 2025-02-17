@@ -11,7 +11,7 @@ interface FoodItem {
 const FoodListItem = ({ item }: { item: FoodItem }) => {
   const { label, cal, brand } = item;
   return (
-    <View className="bg-gray-300 p-4 rounded-md w-full gap-2 flex-row justify-between items-center">
+    <View className="bg-gray-400 p-4 rounded-md w-full gap-2 flex-row justify-between items-center">
       <View className="flex-1 gap-2">
         <Text className="font-bold">{label}</Text>
         <Text className="color-gray-500">
