@@ -1,68 +1,62 @@
-import "../global.css";
-import {
-  ActivityIndicator,
-  Button,
-  FlatList,
-  Text,
-  TextInput,
-} from "react-native";
+import { View, Text, FlatList, Button } from "react-native";
+import React from "react";
+import { Link } from "expo-router";
+
 import FoodListItem from "../components/FoodListItem";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
-import { gql, useLazyQuery } from "@apollo/client";
 
-const query = gql`
-  query MyQuery($ingr: String) {
-    search(ingr: $ingr) {
-      hints {
-        food {
-          label
-          brand
-          foodId
-          nutrients {
-            ENERC_KCAL
-          }
-        }
-      }
-    }
-  }
-`;
+const foodItems = [
+  {
+    food: {
+      label: "Apple",
+      brand: "Fresh Farms",
+      foodId: "123",
+      nutrients: {
+        ENERC_KCAL: 52,
+      },
+    },
+  },
+  {
+    food: {
+      label: "Banana",
+      brand: "Organic Growers",
+      foodId: "456",
+      nutrients: {
+        ENERC_KCAL: 89,
+      },
+    },
+  },
+  {
+    food: {
+      label: "Chicken Breast",
+      brand: "Premium Meats",
+      foodId: "789",
+      nutrients: {
+        ENERC_KCAL: 165,
+      },
+    },
+  },
+];
 
-export default function SearchScreen() {
-  const [search, setsearch] = useState("");
-
-  const [runSearch, { data, loading, error }] = useLazyQuery(query);
-
-  const performSearch = () => {
-    runSearch({ variables: { ingr: search } });
-    setsearch("");
-  };
-
-  if (error) {
-    return <Text>Failed to search</Text>;
-  }
-
-  const items = data?.search?.hints || [];
-
+const HomeScreen = () => {
   return (
-    <SafeAreaView className="p-4 gap-4">
-      <TextInput
-        value={search}
-        onChangeText={setsearch}
-        placeholder="Search..."
-        className="bg-gray-200 rounded-full p-4"
-      />
-      {search && <Button title="Search" onPress={performSearch} />}
-
-      {loading && <ActivityIndicator />}
+    <View className="bg-white flex-1 p-4 gap-4">
+      <View className="flex-row justify-between">
+        <Text className="text-lg font-semibold">Today's food</Text>
+        <Link href="/search" asChild>
+          <Button title="Add Food" />
+        </Link>
+      </View>
+      <View className="flex-row justify-between">
+        <Text className="text-lg font-semibold">Calories</Text>
+        <Text className="">1770 - 360 = 1692</Text>
+      </View>
       <FlatList
-        data={items}
+        data={foodItems}
         renderItem={({ item }) => <FoodListItem item={item} />}
-        ListEmptyComponent={() => (
-          <Text className="text-center">Search foods</Text>
-        )}
         contentContainerClassName="gap-4"
       />
-    </SafeAreaView>
+    </View>
   );
-}
+};
+
+export default HomeScreen;
