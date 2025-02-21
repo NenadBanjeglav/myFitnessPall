@@ -95,3 +95,7 @@ type Query {
       configuration: "edamam"
     )
 }
+
+schema @sdl(files: ["postgresql/index.graphql"]) {
+  query: Query
+}

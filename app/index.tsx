@@ -1,43 +1,41 @@
-import { View, Text, FlatList, Button } from "react-native";
+import { View, Text, FlatList, Button, ActivityIndicator } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
 
-import FoodListItem from "../components/FoodListItem";
+import { gql, useQuery } from "@apollo/client";
+import FoodLogListItem from "../components/FoodLogListItem";
 
-const foodItems = [
-  {
-    food: {
-      label: "Apple",
-      brand: "Fresh Farms",
-      foodId: "123",
-      nutrients: {
-        ENERC_KCAL: 52,
-      },
-    },
-  },
-  {
-    food: {
-      label: "Banana",
-      brand: "Organic Growers",
-      foodId: "456",
-      nutrients: {
-        ENERC_KCAL: 89,
-      },
-    },
-  },
-  {
-    food: {
-      label: "Chicken Breast",
-      brand: "Premium Meats",
-      foodId: "789",
-      nutrients: {
-        ENERC_KCAL: 165,
-      },
-    },
-  },
-];
+const query = gql`
+  query MyQuery($date: Date!, $user_id: String!) {
+    foodLogsForDate(date: $date, user_id: $user_id) {
+      id
+      created_at
+      food_id
+      label
+      user_id
+      kcal
+    }
+  }
+`;
 
 const HomeScreen = () => {
+  const today = new Date();
+  const formattedToday = today.toISOString().split("T")[0];
+  const user_id = "nenad";
+  const { data, loading, error } = useQuery(query, {
+    variables: {
+      date: formattedToday,
+      user_id: user_id,
+    },
+  });
+
+  if (loading) {
+    return <ActivityIndicator />;
+  }
+  if (error) {
+    return <Text>Failed to fetch data</Text>;
+  }
+
   return (
     <View className="bg-white flex-1 p-4 gap-4">
       <View className="flex-row justify-between">
@@ -51,12 +49,12 @@ const HomeScreen = () => {
         <Text className="">1770 - 360 = 1692</Text>
       </View>
       <FlatList
-        data={foodItems}
-        renderItem={({ item }) => <FoodListItem item={item} />}
+        data={data.foodLogsForDate}
+        renderItem={({ item }) => <FoodLogListItem item={item} />}
         contentContainerClassName="gap-4"
       />
     </View>
   );
 };
-
+7;
 export default HomeScreen;
