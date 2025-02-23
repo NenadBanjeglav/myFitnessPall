@@ -6,7 +6,7 @@ import { gql, useQuery } from "@apollo/client";
 import FoodLogListItem from "../components/FoodLogListItem";
 
 const query = gql`
-  query MyQuery($date: Date!, $user_id: String!) {
+  query foodLogsForDate($date: Date!, $user_id: String!) {
     foodLogsForDate(date: $date, user_id: $user_id) {
       id
       created_at
